@@ -1,0 +1,167 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Mini Finance Data Visualizer</title>
+  <meta charset="utf-8">
+  <meta name="description" content="Mini Finance Data Visualizer">
+  <meta name="author" content="Ning Shen">
+  <meta name="generator" content="slidify" />
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta http-equiv="X-UA-Compatible" content="chrome=1">
+  <link rel="stylesheet" href="libraries/frameworks/io2012/css/default.css" media="all" >
+  <link rel="stylesheet" href="libraries/frameworks/io2012/css/phone.css" 
+    media="only screen and (max-device-width: 480px)" >
+  <link rel="stylesheet" href="libraries/frameworks/io2012/css/slidify.css" >
+  <link rel="stylesheet" href="libraries/highlighters/highlight.js/css/tomorrow.css" />
+  <base target="_blank"> <!-- This amazingness opens all links in a new tab. -->  <link rel=stylesheet href="./assets/css/ribbons.css"></link>
+
+  
+  <!-- Grab CDN jQuery, fall back to local if offline -->
+  <script src="http://ajax.aspnetcdn.com/ajax/jQuery/jquery-1.7.min.js"></script>
+  <script>window.jQuery || document.write('<script src="libraries/widgets/quiz/js/jquery.js"><\/script>')</script> 
+  <script data-main="libraries/frameworks/io2012/js/slides" 
+    src="libraries/frameworks/io2012/js/require-1.0.8.min.js">
+  </script>
+  
+  
+
+</head>
+<body style="opacity: 0">
+  <slides class="layout-widescreen">
+    
+    <!-- LOGO SLIDE -->
+        <slide class="title-slide segue nobackground">
+  <hgroup class="auto-fadein">
+    <h1>Mini Finance Data Visualizer</h1>
+    <h2>Visualizing Finance Data and Analyzing Price Return</h2>
+    <p>Ning Shen<br/>Data Modeler</p>
+  </hgroup>
+  <article></article>  
+</slide>
+    
+
+    <!-- SLIDES -->
+    <slide class="" id="slide-1" style="background:;">
+  <hgroup>
+    <h2>Introduction</h2>
+  </hgroup>
+  <article data-timings="">
+    <p>This is a shiny app to find the finance data from multiple sources in one place and analyze its returns.
+This demomstration is going to show you the following functions:</p>
+
+<ol>
+<li>Retrieve financial data from different source</li>
+<li>Visualize price time series over selected period and calculate log price return with the same time range as price time series</li>
+<li>Perform explortary analysis of the return time series<br>
+
+<ol>
+<li>Histogram : gives the distribution of return within bins</li>
+<li>Boxplot : displays five number summary(min,1st quarter,median,3rd quarter,,max) of return</li>
+<li>Normal QQ-plot : compare the shapes of return with normal distribution</li>
+<li>Kernal density plot : it applies the gaussian kernel to estimate the pdf of the return</li>
+<li>Autocorrelation function (ACF) and partial autocorrelation (PACF): it can be used to tentatively identify the numbers of AR and/or MA terms. </li>
+</ol></li>
+</ol>
+
+  </article>
+  <!-- Presenter Notes -->
+</slide>
+
+<slide class="class" id="id" style="background:;">
+  <hgroup>
+    <h2>Available Finance Data Source</h2>
+  </hgroup>
+  <article data-timings="">
+    <p>There is no single source that contains all the finance data. Therefore, this app provides three data source: </p>
+
+<ol>
+<li>Yahoo Finance : a general search engine for Stock/Index symbols such as: SPY(SP500),GOOG</li>
+<li>OANDA: a specialized source for FX currency data(such as USD/JPY ) and metal commodity(such as XAU/XAG for gold/silver pair, XAU/USD for  gold/USD pair),</li>
+<li>FRED : Economic data from federal bank such as FEDFUNDS for Federal fund rate, DGS10 for 10Yr Treasury rate, CPIAUCNS for consumer price index</li>
+</ol>
+
+<p>quantmod package is applied to retrieve data from seleted source and date range like below: </p>
+
+<pre><code class="r">data &lt;- getSymbols(&quot;SPY&quot;,from = &quot;2013-01-01&quot;,to = &quot;2015-01-01&quot;,
+                   src = &quot;yahoo&quot;,auto.assign = FALSE)
+</code></pre>
+
+  </article>
+  <!-- Presenter Notes -->
+</slide>
+
+<slide class="class" id="id" style="background:;">
+  <hgroup>
+    <h2>Time Series of Symbol Price &amp; Return</h2>
+  </hgroup>
+  <article data-timings="">
+    <p>data returned by quantmod package are xts(eXtensible Time Series). There are many packages can be used to visualize it. In this shiny app, we use the R interface to dygraphs javascript package. Click on the tab on the right to see the price of symbol over seleted time range.  </p>
+
+<pre><code class="r">dygraph(as.xts(Return.calculate(Cl(data)),method = &quot;log&quot;),main = &quot;Return&quot;,group=&quot;yahooData&quot;) 
+%&gt;% dyRangeSelector()
+dygraph(Cl(data),main = &quot;Stock Price From Yahoo&quot;,group=&quot;yahooData&quot;) %&gt;% dyRangeSelector()
+</code></pre>
+
+<p>The sample outputs for price and return are:<br>
+<img src="./assets/img/price.PNG" alt="price">
+<img src="./assets/img/return.png" alt="return">  </p>
+
+  </article>
+  <!-- Presenter Notes -->
+</slide>
+
+<slide class="class" id="id" style="background:;">
+  <hgroup>
+    <h2>Exploratory Analysis of Symbol Return</h2>
+  </hgroup>
+  <article data-timings="">
+    <p><img src="assets/fig/unnamed-chunk-4-1.png" alt="plot of chunk unnamed-chunk-4"> </p>
+
+  </article>
+  <!-- Presenter Notes -->
+</slide>
+
+    <slide class="backdrop"></slide>
+  </slides>
+  <div class="pagination pagination-small" id='io2012-ptoc' style="display:none;">
+    <ul>
+      <li>
+      <a href="#" target="_self" rel='tooltip' 
+        data-slide=1 title='Introduction'>
+         1
+      </a>
+    </li>
+    <li>
+      <a href="#" target="_self" rel='tooltip' 
+        data-slide=2 title='Available Finance Data Source'>
+         2
+      </a>
+    </li>
+    <li>
+      <a href="#" target="_self" rel='tooltip' 
+        data-slide=3 title='Time Series of Symbol Price &amp; Return'>
+         3
+      </a>
+    </li>
+    <li>
+      <a href="#" target="_self" rel='tooltip' 
+        data-slide=4 title='Exploratory Analysis of Symbol Return'>
+         4
+      </a>
+    </li>
+  </ul>
+  </div>  <!--[if IE]>
+    <script 
+      src="http://ajax.googleapis.com/ajax/libs/chrome-frame/1/CFInstall.min.js">  
+    </script>
+    <script>CFInstall.check({mode: 'overlay'});</script>
+  <![endif]-->
+</body>
+  <!-- Load Javascripts for Widgets -->
+  
+  <!-- LOAD HIGHLIGHTER JS FILES -->
+  <script src="libraries/highlighters/highlight.js/highlight.pack.js"></script>
+  <script>hljs.initHighlightingOnLoad();</script>
+  <!-- DONE LOADING HIGHLIGHTER JS FILES -->
+   
+  </html>
